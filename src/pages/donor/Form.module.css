@@ -1,9 +1,30 @@
 .formContainer {
     background-color: #90faf2;
+    border-radius: 10px;
+    border: 1px solid lightgray;
     width: 600px;
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 80px;
     height: 400px;
+}
+
+.bottomSection {
+    margin-top: 60px;
+}
+
+.iconContainer {
+    height: 100px;
+    width: 100px;
+    border-radius: 50%;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+}
+
+.notApproved {
+    opacity: 0.3;
 }

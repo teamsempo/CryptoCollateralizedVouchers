@@ -5,9 +5,9 @@ import styles from './index.module.css'
 
 const index = () => (
   <div
-  className={styles.donorContainer}>
+    className={styles.donorContainer}>
     <Form/>
-    </div>
+  </div>
 );
 
 export default index;

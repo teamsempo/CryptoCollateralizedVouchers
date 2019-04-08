@@ -1,23 +1,28 @@
-import React from 'react';
-import {Input} from 'semantic-ui-react'
+import React, { useState } from 'react';
 
+import Input from './Input'
 import styles from './Form.module.css'
+import { Icon } from 'semantic-ui-react';
 
-const Form = () => {
+const _Form = () => {
+  const [approved, setApproved] = useState(false);
+  const [convertAmount, setConvertAmount] = useState('');
   return (
-  <div className={styles.formContainer}>
-    <Input
-      label={{
-        basic: true,
-        content: 'Dai',
-        color: 'pink'
-      }}
-      labelPosition='right'
-      placeholder='0.0'
-      type="number"
-    />
-  </div>
-)
-  };
+    <div className={styles.formContainer}>
+      <Input
+        label="Amount to convert"
+        value={convertAmount}
+        onChange={(e:React.ChangeEvent<HTMLInputElement>) => {
+          return setConvertAmount(e.target.value);
+        }}/>
 
-export default Form;
+      <div className={styles.bottomSection}>
+        <div className={styles.iconContainer}>
+          <Icon name="check circle outline" size="huge" color="grey"/>
+        </div>
+      </div>
+    </div>
+  )
+};
+
+export default _Form;

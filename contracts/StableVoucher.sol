@@ -18,7 +18,7 @@ import "./SafeMath.sol";
  */
 contract StableVoucher is IERC20 {
 
-    ERC20 public targetToken;
+    PremintERC20 public targetToken;
 
     using SafeMath for uint256;
 
@@ -33,7 +33,7 @@ contract StableVoucher is IERC20 {
     uint256 private _totalSupply;
 
     constructor(address targetTokenAddress) public {
-        targetToken = ERC20(targetTokenAddress);
+        targetToken = PremintERC20(targetTokenAddress);
         admin = msg.sender;
     }
 

@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import './App.css';
 import Router from './Router';
 
 import 'semantic-ui-css/semantic.min.css'

@@ -15,10 +15,8 @@ import "./SafeMath.sol";
  * all accounts just by listening to said events. Note that this isn't required by the specification, and other
  * compliant implementations may not do it.
  */
-contract ERC20 is IERC20 {
+contract PremintERC20 is IERC20 {
     using SafeMath for uint256;
-
-    address public senderino;
 
     mapping (address => uint256) private _balances;
 
@@ -28,12 +26,6 @@ contract ERC20 is IERC20 {
 
     constructor() public {
         _mint(msg.sender, 1000);
-    }
-
-    function senderify() public returns(bool) {
-        senderino = msg.sender;
-
-        return (true);
     }
 
     /**

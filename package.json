@@ -14,7 +14,9 @@
     "react-scripts": "2.1.8",
     "semantic-ui-css": "^2.4.1",
     "semantic-ui-react": "^0.86.0",
-    "typescript": "3.4.2"
+    "solc": "^0.5.7",
+    "typescript": "3.4.2",
+    "web3": "^1.0.0-beta.52"
   },
   "scripts": {
     "start": "react-scripts start",

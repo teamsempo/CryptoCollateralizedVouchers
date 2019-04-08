@@ -1,7 +1,7 @@
 pragma solidity ^0.5.2;
 
 import "./IERC20.sol";
-import "./ERC20.sol";
+import "./PremintERC20.sol";
 import "./SafeMath.sol";
 
 /**

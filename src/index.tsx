@@ -2,9 +2,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
-import Web3 from "web3";
-import ERC20ABI from "./ethereum/ABIs/ERC20";
-import VoucherABI from "./ethereum/ABIs/StableVoucher";
+import Web3 from 'web3';
+import ERC20ABI from './ethereum/ABIs/ERC20';
+import VoucherABI from './ethereum/ABIs/StableVoucher';
 
 // contracts
 import coin from './ethereum/coin';
@@ -20,18 +20,17 @@ declare global {
 }
 
 export interface Network {
-  coinContractAddr: string,
-  voucherContractAddr: string,
-  coinDecimals: number,
-  voucherDecimals: number
+  coinContractAddr: string;
+  voucherContractAddr: string;
+  coinDecimals: number;
+  voucherDecimals: number;
 }
 
 interface Networks {
-  [network: string]: Network
+  [network: string]: Network;
 }
 
 window.addEventListener('load', async () => {
-
   // Modern dapp browsers...
   if (window.ethereum) {
     window.web3 = new Web3(window.ethereum);
@@ -47,14 +46,13 @@ window.addEventListener('load', async () => {
   else if (window.ethereum.web3) {
     window.web3 = new Web3(window.ethereum.web3.currentProvider);
     // Acccounts always exposed
-    console.log('mounted old metamask')
+    console.log('mounted old metamask');
   } else {
-    alert("Please install metamask")
+    alert('Please install metamask');
   }
 
-  window.coin = coin
-  window.voucher = voucher
+  window.coin = coin;
+  window.voucher = voucher;
 
-  ReactDOM.render(<App/>, document.getElementById('root'));
+  ReactDOM.render(<App />, document.getElementById('root'));
 });
-

@@ -1,11 +1,9 @@
 import React from 'react';
-
-import Input from './Input'
-import styles from './Form.module.css'
 import { Icon } from 'semantic-ui-react';
 
-// import coin from "../../ethereum/coin"
-// let web3 = require("../../ethereum/web3")
+import Input from './Input';
+import styles from './Form.module.css';
+import {voucherAddress} from '../../constants';
 
 interface OwnState {
   isApproving: boolean;
@@ -73,7 +71,7 @@ class _Form extends React.Component<{}, OwnState> {
 
     this.setState({isApproving: true})
     return window.coin.methods.approve(
-        '0x61c5a0c36239943093e21eb9ba45ee1308df2d86',ERC20amount.toString())
+        voucherAddress,ERC20amount.toString())
     .send({from: this.state.account})
     .on('confirmation', (confirmationNumber:number) => {
       if (confirmationNumber === 1) {

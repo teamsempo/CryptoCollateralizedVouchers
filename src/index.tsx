@@ -7,6 +7,10 @@ import Web3 from "web3";
 import ERC20ABI from "./ethereum/ABIs/ERC20";
 import VoucherABI from "./ethereum/ABIs/StableVoucher";
 
+// contracts
+import coin from './ethereum/coin';
+import voucher from './ethereum/voucher';
+
 declare global {
   interface Window {
     ethereum: any;
@@ -49,15 +53,8 @@ window.addEventListener('load', async () => {
     alert("Please install metamask")
   }
 
-  window.coin = new window.web3.eth.Contract(
-    ERC20ABI,
-    '0xc4375b7de8af5a38a93548eb8453a498222c4ff2'
-  );
-
-   window.voucher = new window.web3.eth.Contract(
-    VoucherABI,
-    '0x61c5a0c36239943093e21eb9ba45ee1308df2d86'
-  );
+  window.coin = coin
+  window.voucher = voucher
 
   ReactDOM.render(<App/>, document.getElementById('root'));
 });

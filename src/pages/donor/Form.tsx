@@ -1,5 +1,5 @@
 import React from 'react';
-import { Icon } from 'semantic-ui-react';
+import { Icon, Popup } from 'semantic-ui-react';
 import swal from 'sweetalert';
 
 import Section from './Section';
@@ -14,7 +14,7 @@ interface OwnState {
   isWrapping: boolean;
   isWrapped: boolean;
 
-  amount: number;
+  amount: string;
 
   // from the contract
   balance: string;
@@ -30,7 +30,7 @@ class _Form extends React.Component<{}, OwnState> {
     isWrapping: false,
     isWrapped: false,
 
-    amount: 0,
+    amount: '',
     balance: '',
     account: '',
   };
@@ -122,7 +122,7 @@ class _Form extends React.Component<{}, OwnState> {
       return ;
     }
 
-    this.approve(amount)
+    this.approve(Number(amount))
   };
 
   handleWrapClick() {
@@ -141,7 +141,7 @@ class _Form extends React.Component<{}, OwnState> {
   render() {
     const {amount, isApproving, isApproved, isWrapping} = this.state;
 
-    const shouldPulse = amount !== 0 && !isApproving && !isApproved;
+    const shouldPulse = amount !== '' && !isApproving && !isApproved;
     return (
       <div className={styles.formContainer}>
       <div style={{color: 'black'}}>
@@ -159,16 +159,17 @@ class _Form extends React.Component<{}, OwnState> {
             this.setState({
               isApproved: false,
               isApproving: false,
-              amount: Number(e.target.value)
+              amount: e.target.value
             })
           }}
         />
 
         <div className={`${styles.bottomSection} ${isApproved && styles.doubleBottom}`}>
+            <Popup position="right center" trigger={
           <div className={`${styles.iconContainer} ${shouldPulse && styles.pulse}`} onClick={() => this.handleApproveClick()}>
             <Icon name={isApproving ? 'spinner' : "check circle outline"} loading={isApproving} size="big" color={isApproved ? "green" : "grey"} disabled={isApproved || isApproving}/>
-            {isApproved && 'Approved'}
-          </div>
+            
+          </div>} content={`Request approval for ${amount} Dai`}/>
 
       {isApproved &&
           (<div className={`${styles.iconContainer} ${shouldPulse && styles.pulse}`} onClick={() => this.handleWrapClick()}>

@@ -4,6 +4,9 @@ import Input from './Input'
 import styles from './Form.module.css'
 import { Icon } from 'semantic-ui-react';
 
+import coin from "../../ethereum/coin"
+let web3 = require("../../ethereum/web3")
+
 interface OwnState {
   isApproving: boolean;
   isApproved: boolean;
@@ -17,6 +20,26 @@ class _Form extends React.Component<{}, OwnState> {
     isApproved: false,
     convertAmount: ''
   };
+
+  componentDidMount() {
+    this.getCoinBalance()
+  }
+
+  async getCoinBalance(){
+
+    console.log('web3 is', web3.eth);
+
+    const account = await web3.eth.getAccounts().then((accounts: string[]) => accounts[0]);
+
+    return await coin.methods.balanceOf(account)
+      .call()
+      .then((result: number) => {
+        // let dappAmount = this.ERCToDappAmount(result, 18);
+        // this.setState({coinBalance: dappAmount});
+        console.log('balance is:',result);
+        return result
+      })
+  }
 
   handleClick() {
     this.setState({isApproving: true})

@@ -6,17 +6,13 @@ import { routes } from './routes';
 import {Network} from "./index";
 
 
-interface Props {
-  approve: any,
-  wrapCoin: any
-}
-const Router = (props: Props) => (
+const Router = () => (
   <BrowserRouter>
     <Route
       path={routes.donor}
       component={Donor}
-      approve={(amount: number) => props.approve(amount)}
-      wrapCoin={(amount: number) => props.wrapCoin(amount)}
+      // approve={(amount: number) => props.approve(amount)}
+      // wrapCoin={(amount: number) => props.wrapCoin(amount)}
     />
   </BrowserRouter>
 );

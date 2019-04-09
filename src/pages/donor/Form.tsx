@@ -1,5 +1,6 @@
 import React from 'react';
 import { Icon } from 'semantic-ui-react';
+import swal from 'sweetalert';
 
 import Input from './Input';
 import styles from './Form.module.css';
@@ -12,7 +13,7 @@ interface OwnState {
   isWrapping: boolean;
   isWrapped: boolean;
 
-  convertAmount: string;
+  amount: number;
 
   // from the contract
   balance: string;
@@ -28,7 +29,7 @@ class _Form extends React.Component<{}, OwnState> {
     isWrapping: false,
     isWrapped: false,
 
-    convertAmount: '',
+    amount: 0,
     balance: '',
     account: '',
   };
@@ -66,7 +67,7 @@ class _Form extends React.Component<{}, OwnState> {
     return amount * 10**18
   }
 
-  approve(amount: number):Promise<any> {
+  approve(amount: number) {
     let ERC20amount = this.dappToERC20Amount(amount);
 
     this.setState({isApproving: true})
@@ -110,33 +111,36 @@ class _Form extends React.Component<{}, OwnState> {
   }
 
   handleApproveClick() {
-    const {balance} = this.state;
-    const convertAmount = Number(this.state.convertAmount);
-    if (convertAmount > Number(balance)) {
-      alert(`Woops! You cannot voucher ${convertAmount} Dai since your account balance is ${balance} `);
+    const {balance, amount} = this.state;
+    if (Number(amount) <= 0) {
+      swal('Error', `An amount of ${amount} is invalid. Your request has been stopped.`, 'error');
+      return ;
+    }
+    if (Number(amount) > Number(balance)) {
+      swal('Error', `A request of ${amount} is more than you have. Your request has been stopped.`, 'error');
       return ;
     }
 
-    this.approve(convertAmount)
+    this.approve(amount)
   };
 
   handleWrapClick() {
     const {balance} = this.state;
-    const convertAmount = Number(this.state.convertAmount);
-    if (convertAmount > Number(balance)) {
-      alert(`Woops! You cannot voucher ${convertAmount} Dai since your account balance is ${balance} `);
+    const amount = Number(this.state.amount);
+    if (amount > Number(balance)) {
+      alert(`Woops! You cannot voucher ${amount} Dai since your account balance is ${balance} `);
       return ;
     }
 
     // success state
 
-    this.wrapCoin(convertAmount)
+    this.wrapCoin(amount)
   };
 
   render() {
-    const {convertAmount, isApproving, isApproved, isWrapping} = this.state;
+    const {amount, isApproving, isApproved, isWrapping} = this.state;
 
-    const shouldPulse = convertAmount !== '' && !isApproving && !isApproved;
+    const shouldPulse = amount !== 0 && !isApproving && !isApproved;
     return (
       <div className={styles.formContainer}>
       <div style={{color: 'black'}}>
@@ -144,11 +148,12 @@ class _Form extends React.Component<{}, OwnState> {
       </div>
         <Input
           label="Amount to convert"
-          value={convertAmount}
+          value={amount}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
             this.setState({
+              isApproved: false,
               isApproving: false,
-              convertAmount: e.target.value
+              amount: Number(e.target.value)
             })
           }}
         />
@@ -161,7 +166,7 @@ class _Form extends React.Component<{}, OwnState> {
 
       {isApproved &&
           (<div className={`${styles.iconContainer} ${shouldPulse && styles.pulse}`} onClick={() => this.handleWrapClick()}>
-            <Icon name={isWrapping ? 'spinner' : "check circle outline"} loading={isWrapping} size="big" color="grey" />
+            <Icon name={isWrapping ? 'spinner' : "send"} loading={isWrapping} size="big" color="grey" />
           </div>
             )}
         </div>

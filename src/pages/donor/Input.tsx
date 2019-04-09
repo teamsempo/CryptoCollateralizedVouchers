@@ -5,7 +5,7 @@ import styles from './Input.module.css'
 
 interface Props  {
   label: string;
-  value: string;
+  value: string | number;
   onChange: any;
 }
 

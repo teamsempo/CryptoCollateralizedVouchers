@@ -11,6 +11,10 @@
 
 .bottomSection {
     margin-top: 60px;
+    display: flex;
+    width: 280px;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .iconContainer {

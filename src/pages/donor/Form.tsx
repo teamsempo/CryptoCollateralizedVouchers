@@ -104,6 +104,7 @@ class _Form extends React.Component<{}, OwnState> {
               isWrapping: false,
               isWrapped: true,
             });
+            this.getCoinBalance();
           }
         })
         .on('error', (error:any) => {
@@ -133,13 +134,11 @@ class _Form extends React.Component<{}, OwnState> {
       return ;
     }
 
-    // success state
-
     this.wrapCoin(amount)
   };
 
   render() {
-    const {amount, isApproving, isApproved, isWrapping} = this.state;
+    const {amount, isApproving, isApproved, isWrapping, isWrapped} = this.state;
 
     const shouldPulse = amount !== '' && !isApproving && !isApproved;
     return (
@@ -165,16 +164,17 @@ class _Form extends React.Component<{}, OwnState> {
         />
 
         <div className={`${styles.bottomSection} ${isApproved && styles.doubleBottom}`}>
-            <Popup position="right center" trigger={
+            <Popup disabled={isApproved} position="right center" trigger={
           <div className={`${styles.iconContainer} ${shouldPulse && styles.pulse}`} onClick={() => this.handleApproveClick()}>
             <Icon name={isApproving ? 'spinner' : "check circle outline"} loading={isApproving} size="big" color={isApproved ? "green" : "grey"} disabled={isApproved || isApproving}/>
             
           </div>} content={`Request approval for ${amount} Dai`}/>
 
       {isApproved &&
-          (<div className={`${styles.iconContainer} ${shouldPulse && styles.pulse}`} onClick={() => this.handleWrapClick()}>
-            <Icon name={isWrapping ? 'spinner' : "send"} loading={isWrapping} size="big" color="grey" />
-          </div>
+          (          <Popup disabled={isWrapped} position="right center" trigger={
+(<div className={`${styles.iconContainer} ${shouldPulse && styles.pulse}`} onClick={() => this.handleWrapClick()}>
+            <Icon name={isWrapping ? 'spinner' : "send"} loading={isWrapping} size="big" color={isWrapped ? "green" : "grey"} disabled={isWrapped || isWrapping}/>
+          </div>)} content={`Send ${amount} Dai`}/>
             )}
         </div>
       </div>

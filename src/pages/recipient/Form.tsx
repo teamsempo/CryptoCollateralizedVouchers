@@ -1,14 +1,17 @@
 import React from 'react';
+import { Icon, Popup } from 'semantic-ui-react';
+import swal from 'sweetalert'
 
 import Input from './Input'
 import styles from './Form.module.css'
-import { Icon } from 'semantic-ui-react';
+import Section from '../donor/Section';
 
 interface OwnState {
   userBalance?: number;
   canUnwrap: boolean;
   unwrapAmount: string;
   isUnwrapping: boolean;
+  isUnwrapped: boolean;
 }
 
 class _Form extends React.Component<{}, OwnState> {
@@ -18,6 +21,7 @@ class _Form extends React.Component<{}, OwnState> {
     unwrapAmount: '',
     userBalance: 0,
     isUnwrapping: false,
+    isUnwrapped: false,
 };
 
   componentDidMount() {
@@ -68,39 +72,50 @@ class _Form extends React.Component<{}, OwnState> {
     console.log('balance is:', this.state.userBalance);
     console.log('amount is:', amount);
 
+    if (amount <= 0) {
+      swal('Error', "Amount must be more than zero", 'error');
+			return ;
+		}
     if (this.state.userBalance < amount) {
-      alert("Not enough balance")
+      swal('Error', "Not enough balance", 'error')
     } else {
       let ERC20amount = this.dappToERC20Amount(amount);
 
+			this.setState({isUnwrapping: true});
       return window.voucher.methods.unwrapTokens(ERC20amount.toString()).send({from: await this.getAccount()})
         .on('confirmation', (confirmationNumber:number) => {
           if (confirmationNumber === 1) {
             this.setState({
-              isUnwrapping: false
+              isUnwrapping: false,
+              isUnwrapped: true
             });
             this.getVoucherBalance();
           }
         })
         .on('error', (error:any) => {
-          alert(`Error: ${error}`);
+					swal('Error', error, 'error')
         });
     }
   }
 
   handleClick() {
-    this.setState({isUnwrapping: true});
     this.unwrapCoin(Number(this.state.unwrapAmount))
   };
 
   render() {
-    const {unwrapAmount, isUnwrapping} = this.state;
+    const {unwrapAmount, isUnwrapping, isUnwrapped} = this.state;
 
     const shouldPulse = isUnwrapping;
     return (
       <div className={styles.formContainer}>
       <div style={{color: 'black'}}>
-      {this.state.userBalance}
+            <Section >
+          <div>
+            You can unwrap up to
+          <h1 style={{fontWeight: 'bold', marginLeft: '8px', marginRight: '8px'}}> {this.state.userBalance} Dai </h1>
+        </div>
+        </Section>
+
       </div>
         <Input
           label="Amount to Unwrap"
@@ -114,9 +129,13 @@ class _Form extends React.Component<{}, OwnState> {
         />
 
         <div className={styles.bottomSection}>
-          <div className={`${styles.iconContainer} ${shouldPulse && styles.pulse}`} onClick={() => this.handleClick()}>
-            <Icon name={isUnwrapping ? 'spinner' : "check circle outline"} loading={isUnwrapping} size="big" color="grey" />
+
+            <Popup disabled={isUnwrapping} position="right center" trigger={
+          (<div className={`${styles.iconContainer} ${shouldPulse && styles.pulse}`} onClick={() => this.handleClick()}>
+            <Icon name={isUnwrapping ? 'spinner' : "arrow alternate circle down outline"} loading={isUnwrapping} size="big" color={isUnwrapped ? "green" : "grey"} />
           </div>
+              )} content={`Unwrap ${unwrapAmount} Dai`}/>
+
         </div>
       </div>
     )

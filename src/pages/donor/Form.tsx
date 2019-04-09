@@ -195,7 +195,7 @@ class _Form extends React.Component<{}, OwnState> {
             styles.doubleBottom}`}
         >
           <Popup
-            disabled={isApproved}
+            disabled={isApproved || isApproving}
             position="right center"
             trigger={
               <div
@@ -208,7 +208,6 @@ class _Form extends React.Component<{}, OwnState> {
                   loading={isApproving}
                   size="big"
                   color={isApproved ? 'green' : 'grey'}
-                  disabled={isApproved || isApproving}
                 />
               </div>
             }
@@ -217,7 +216,7 @@ class _Form extends React.Component<{}, OwnState> {
 
           {isApproved && (
             <Popup
-              disabled={isWrapped}
+              disabled={isWrapped || isWrapping}
               position="right center"
               trigger={
                 <div
@@ -230,7 +229,6 @@ class _Form extends React.Component<{}, OwnState> {
                     loading={isWrapping}
                     size="big"
                     color={isWrapped ? 'green' : 'grey'}
-                    disabled={isWrapped || isWrapping}
                   />
                 </div>
               }

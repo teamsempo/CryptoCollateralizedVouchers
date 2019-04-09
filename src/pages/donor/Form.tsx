@@ -1,28 +1,48 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import Input from './Input'
 import styles from './Form.module.css'
 import { Icon } from 'semantic-ui-react';
 
-const _Form = () => {
-  const [approved, setApproved] = useState(false);
-  const [convertAmount, setConvertAmount] = useState('');
-  return (
-    <div className={styles.formContainer}>
-      <Input
-        label="Amount to convert"
-        value={convertAmount}
-        onChange={(e:React.ChangeEvent<HTMLInputElement>) => {
-          return setConvertAmount(e.target.value);
-        }}/>
+interface OwnState {
+  isApproving: boolean;
+  isApproved: boolean;
+  convertAmount: string;
+}
 
-      <div className={styles.bottomSection}>
-        <div className={styles.iconContainer}>
-          <Icon name="check circle outline" size="huge" color="grey"/>
+class _Form extends React.Component<{}, OwnState> {
+
+  state = {
+    isApproving: false,
+    isApproved: false,
+    convertAmount: ''
+  }
+
+  render() {
+    const {convertAmount, isApproving, isApproved} = this.state;
+
+    const shouldPulse = convertAmount !== '' && !isApproving && !isApproved;
+    return (
+      <div className={styles.formContainer}>
+        <Input
+          label="Amount to convert"
+          value={convertAmount}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+            this.setState({
+              isApproving: false,
+              convertAmount: e.target.value
+            })
+          }}
+        />
+
+        <div className={styles.bottomSection}>
+          <div className={`${styles.iconContainer} ${shouldPulse && styles.pulse}`} onClick={() => this.setState({isApproving: true})}>
+            <Icon name={isApproving ? 'spinner' : "check circle outline"} loading={isApproving} size="big" color="grey" />
+          </div>
         </div>
       </div>
-    </div>
-  )
-};
+    )
+  }
+}
 
 export default _Form;

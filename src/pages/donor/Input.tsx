@@ -1,5 +1,5 @@
 import React from 'react';
-import {Input, Form, Icon} from 'semantic-ui-react'
+import {Input, Form} from 'semantic-ui-react'
 
 import styles from './Input.module.css'
 
@@ -21,7 +21,6 @@ const _Input = ({label, ...rest}:Props) => (
         type="number"
         {...rest}
     />
-    <Icon name='arrow alternate circle right outline' circular link style={{marginLeft: '20px' }} />
    </div>
   </Form.Field>
 );

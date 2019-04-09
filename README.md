@@ -1,6 +1,6 @@
 # Stable Voucher
 
-> This allows **free** distibutions of cryptocurrencies to be [KYC](https://en.wikipedia.org/wiki/Know_your_customer) compliant 💸
+> Stable Voucher allows distributions of crypto to be [KYC](https://en.wikipedia.org/wiki/Know_your_customer) compliant 💸
 
 Stable voucher is a token wrapping system for stable coins. It allows administrators to give "Stable Vouchers" to refugees which are pegged to the United States Dollar. Refugees can spend their Stable Vouchers at approved vendors like grocery stores.
 

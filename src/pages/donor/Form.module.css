@@ -11,11 +11,14 @@
 
 .bottomSection {
     margin-top: 60px;
-    display: flex;
     width: 280px;
-    justify-content: space-between;
-    align-items: center;
+
+    display: flex;
+    justify-content: center;
 }
+.doubleBottom {
+    justify-content: space-between;
+  }
 
 .iconContainer {
     box-shadow: 0 22px 70px 4px rgba(0, 0, 0, 0.56);

@@ -158,7 +158,7 @@ class _Form extends React.Component<{}, OwnState> {
           }}
         />
 
-        <div className={styles.bottomSection}>
+        <div className={`${styles.bottomSection} ${isApproved && styles.doubleBottom}`}>
           <div className={`${styles.iconContainer} ${shouldPulse && styles.pulse}`} onClick={() => this.handleApproveClick()}>
             <Icon name={isApproving ? 'spinner' : "check circle outline"} loading={isApproving} size="big" color={isApproved ? "green" : "grey"} disabled={isApproved || isApproving}/>
             {isApproved && 'Approved'}

@@ -40,7 +40,7 @@ class App extends Component<Props, State>  {
   }
 
   private consoleLogDevInfo = () => {
-    console.group('Dev Info');
+    console.groupCollapsed('Dev Info');
     console.log({
       coinAddress,
       voucherAddress,

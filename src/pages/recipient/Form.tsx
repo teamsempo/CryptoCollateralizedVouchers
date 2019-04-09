@@ -55,6 +55,7 @@ class _Form extends React.Component<{}, OwnState> {
       .approvedUnwrappers(account)
       .call()
       .then((result: boolean) => {
+        console.log('unwrap result:', result)
         this.setState({
           canUnwrap: result
         });
@@ -77,6 +78,12 @@ class _Form extends React.Component<{}, OwnState> {
       swal('Error', 'Amount must be more than zero', 'error');
       return;
     }
+
+    if (!this.state.canUnwrap) {
+      swal('Error', 'Not Permitted to Unwrap', 'error');
+      return;
+    }
+
     if (this.state.userBalance < amount) {
       swal('Error', 'Not enough balance', 'error');
     } else {

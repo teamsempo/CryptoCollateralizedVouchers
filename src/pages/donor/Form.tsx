@@ -8,6 +8,7 @@ import { Icon } from 'semantic-ui-react';
 // let web3 = require("../../ethereum/web3")
 
 interface OwnState {
+  userBalance: string;
   isApproving: boolean;
   isApproved: boolean;
   convertAmount: string;
@@ -18,7 +19,8 @@ class _Form extends React.Component<{}, OwnState> {
   state = {
     isApproving: false,
     isApproved: false,
-    convertAmount: ''
+    convertAmount: '',
+    userBalance: '',
   };
 
   componentDidMount() {
@@ -26,34 +28,35 @@ class _Form extends React.Component<{}, OwnState> {
     this.approve(1)
   }
 
-  async getAccount() {
-    return await window.web3.eth.getAccounts().then((accounts: string[]) => accounts[0]);
+  private getAccount():Promise<string> {
+    return window.web3.eth.getAccounts().then((accounts: string[]) => accounts[0]);
   }
 
-  async getCoinBalance(){
+  async getCoinBalance():Promise<number> {
+    const account:string = await this.getAccount();
 
-    console.log('web3 is', window.web3.eth);
-
-    return await window.coin.methods.balanceOf(this.getAccount())
+    return window.coin.methods.balanceOf(account)
       .call()
       .then((result: number) => {
         // let dappAmount = this.ERCToDappAmount(result, 18);
         // this.setState({coinBalance: dappAmount});
-        console.log('balance is:',result);
-        return result
+        const userBalance = String(this.eRCToDappAmount(result))
+        this.setState({
+          userBalance
+        })
       })
   }
 
-  ERCToDappAmount(amount: number, decimals: number) {
-    return amount / 10**decimals
+  private eRCToDappAmount(amount: number):number {
+    return amount / 10**18
   }
 
-  DappToERC20Amount(amount: number, decimals: number) {
-    return amount * 10**decimals
+  private dappToERC20Amount(amount: number) {
+    return amount * 10**18
   }
 
   async approve(amount: number) {
-    let ERC20amount = this.DappToERC20Amount(amount, 18);
+    let ERC20amount = this.dappToERC20Amount(amount);
 
     return await window.coin.methods.approve(
       '0xc4375b7de8af5a38a93548eb8453a498222c4ff2',ERC20amount.toString()).send({from: await this.getAccount()})
@@ -62,16 +65,20 @@ class _Form extends React.Component<{}, OwnState> {
       });
   }
 
-  async wrapCoin(amount: number) {
+  async wrapCoin(amount: number):Promise<any> {
     let balance = await this.getCoinBalance();
+    this.setState({
+      userBalance: String(balance)
+    })
 
     if (balance < amount) {
       throw "Not Enough Balance"
     }
 
-    let ERC20amount = this.DappToERC20Amount(amount, 18);
+    let ERC20amount = this.dappToERC20Amount(amount);
 
-    return await window.voucher.methods.wrapTokens(ERC20amount.toString(), this.getAccount()).send({from: await this.getAccount()})
+    return window.voucher.methods.wrapTokens(ERC20amount.toString(), this.getAccount()).send({from: await this.getAccount()})
+
       .then((receipt: any) => {
         console.log(receipt)
       });
@@ -88,6 +95,9 @@ class _Form extends React.Component<{}, OwnState> {
     const shouldPulse = convertAmount !== '' && !isApproving && !isApproved;
     return (
       <div className={styles.formContainer}>
+      <div style={{color: 'black'}}>
+      {this.state.userBalance}
+      </div>
         <Input
           label="Amount to convert"
           value={convertAmount}

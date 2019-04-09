@@ -4,7 +4,13 @@ const PremintERC20 = artifacts.require("PremintERC20");
 
 const StableVoucher = artifacts.require("StableVoucher");
 
-module.exports = function(deployer) {
+let networks = {
+    'kovan': {
+        stableCoinAddr: '0xc4375b7de8af5a38a93548eb8453a498222c4ff2'
+    }
+}
+
+module.exports = function(deployer, network) {
   deployer.deploy(SafeMath);
   deployer.link(SafeMath, IERC20);
   deployer.deploy(IERC20);

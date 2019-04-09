@@ -31,6 +31,9 @@ contract StableVoucher is IERC20 {
     mapping (address => mapping (address => uint256)) private _allowed;
 
     uint256 private _totalSupply;
+    string public symbol = 'STBV';
+    string public  name = 'Stable Voucher';
+    uint8 public decimals = 18;
 
     constructor(address targetTokenAddress) public {
         targetToken = PremintERC20(targetTokenAddress);

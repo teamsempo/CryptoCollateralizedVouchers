@@ -16,7 +16,11 @@ class _Form extends React.Component<{}, OwnState> {
     isApproving: false,
     isApproved: false,
     convertAmount: ''
-  }
+  };
+
+  handleClick() {
+    this.setState({isApproving: true})
+  };
 
   render() {
     const {convertAmount, isApproving, isApproved} = this.state;
@@ -36,7 +40,7 @@ class _Form extends React.Component<{}, OwnState> {
         />
 
         <div className={styles.bottomSection}>
-          <div className={`${styles.iconContainer} ${shouldPulse && styles.pulse}`} onClick={() => this.setState({isApproving: true})}>
+          <div className={`${styles.iconContainer} ${shouldPulse && styles.pulse}`} onClick={() => this.handleClick()}>
             <Icon name={isApproving ? 'spinner' : "check circle outline"} loading={isApproving} size="big" color="grey" />
           </div>
         </div>

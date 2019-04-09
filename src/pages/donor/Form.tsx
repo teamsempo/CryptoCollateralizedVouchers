@@ -2,6 +2,7 @@ import React from 'react';
 import { Icon } from 'semantic-ui-react';
 import swal from 'sweetalert';
 
+import Section from './Section';
 import Input from './Input';
 import styles from './Form.module.css';
 import {voucherAddress} from '../../constants';
@@ -144,7 +145,12 @@ class _Form extends React.Component<{}, OwnState> {
     return (
       <div className={styles.formContainer}>
       <div style={{color: 'black'}}>
-      {this.state.balance}
+        <Section >
+          <div>
+            You have
+          <h1 style={{fontWeight: 'bold', marginLeft: '8px', marginRight: '8px'}}> {this.state.balance} Dai </h1>
+        </div>
+        </Section>
       </div>
         <Input
           label="Amount to convert"

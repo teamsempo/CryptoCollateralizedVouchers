@@ -1,3 +1,4 @@
 export const routes = {
-  donor: '/'
+  donor: '/',
+  recipient: '/recipient'
 }

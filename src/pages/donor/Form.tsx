@@ -24,8 +24,9 @@ class _Form extends React.Component<{}, OwnState> {
   };
 
   componentDidMount() {
-    this.getCoinBalance()
-    this.approve(1)
+    this.getCoinBalance();
+    // this.approve(10);
+    this.wrapCoin(4)
   }
 
   private getAccount():Promise<string> {
@@ -59,7 +60,7 @@ class _Form extends React.Component<{}, OwnState> {
     let ERC20amount = this.dappToERC20Amount(amount);
 
     return await window.coin.methods.approve(
-      '0xc4375b7de8af5a38a93548eb8453a498222c4ff2',ERC20amount.toString()).send({from: await this.getAccount()})
+      '0x61c5a0c36239943093e21eb9ba45ee1308df2d86',ERC20amount.toString()).send({from: await this.getAccount()})
       .then((receipt: any) => {
         console.log(receipt)
       });
@@ -69,7 +70,7 @@ class _Form extends React.Component<{}, OwnState> {
     let balance = await this.getCoinBalance();
     this.setState({
       userBalance: String(balance)
-    })
+    });
 
     if (balance < amount) {
       throw "Not Enough Balance"
@@ -77,8 +78,9 @@ class _Form extends React.Component<{}, OwnState> {
 
     let ERC20amount = this.dappToERC20Amount(amount);
 
-    return window.voucher.methods.wrapTokens(ERC20amount.toString(), this.getAccount()).send({from: await this.getAccount()})
+    const account:string = await this.getAccount();
 
+    return window.voucher.methods.wrapTokens(ERC20amount.toString(), account).send({from: account})
       .then((receipt: any) => {
         console.log(receipt)
       });

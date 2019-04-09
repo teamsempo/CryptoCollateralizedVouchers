@@ -8,10 +8,17 @@ import { Icon } from 'semantic-ui-react';
 // let web3 = require("../../ethereum/web3")
 
 interface OwnState {
-  userBalance: string;
   isApproving: boolean;
   isApproved: boolean;
+
+  isWrapping: boolean;
+  isWrapped: boolean;
+
   convertAmount: string;
+
+  // from the contract
+  balance: string;
+  account: string;
 }
 
 class _Form extends React.Component<{}, OwnState> {
@@ -19,30 +26,36 @@ class _Form extends React.Component<{}, OwnState> {
   state = {
     isApproving: false,
     isApproved: false,
+
+    isWrapping: false,
+    isWrapped: false,
+
     convertAmount: '',
-    userBalance: '',
+    balance: '',
+    account: '',
   };
 
   componentDidMount() {
-    this.getCoinBalance()
-    this.approve(1)
+    this.getAccount()
+      .then(this.getCoinBalance)
   }
 
-  private getAccount():Promise<string> {
-    return window.web3.eth.getAccounts().then((accounts: string[]) => accounts[0]);
+  private getAccount():Promise<void> {
+    return window.web3.eth.getAccounts()
+      .then((accounts: string[]) => this.setState({account: accounts[0]}));
   }
 
-  async getCoinBalance():Promise<number> {
-    const account:string = await this.getAccount();
+  private getCoinBalance = ():Promise<number> => {
+    const {account} = this.state;
 
     return window.coin.methods.balanceOf(account)
       .call()
       .then((result: number) => {
         // let dappAmount = this.ERCToDappAmount(result, 18);
         // this.setState({coinBalance: dappAmount});
-        const userBalance = String(this.eRCToDappAmount(result))
+        const balance = String(this.eRCToDappAmount(result))
         this.setState({
-          userBalance
+          balance
         })
       })
   }
@@ -55,48 +68,81 @@ class _Form extends React.Component<{}, OwnState> {
     return amount * 10**18
   }
 
-  async approve(amount: number) {
+  approve(amount: number):Promise<any> {
     let ERC20amount = this.dappToERC20Amount(amount);
 
-    return await window.coin.methods.approve(
-      '0xc4375b7de8af5a38a93548eb8453a498222c4ff2',ERC20amount.toString()).send({from: await this.getAccount()})
-      .then((receipt: any) => {
-        console.log(receipt)
-      });
+    this.setState({isApproving: true})
+    return window.coin.methods.approve(
+        '0x61c5a0c36239943093e21eb9ba45ee1308df2d86',ERC20amount.toString())
+    .send({from: this.state.account})
+    .on('confirmation', (confirmationNumber:number) => {
+      if (confirmationNumber === 1) {
+        this.setState({
+          isApproving: false,
+          isApproved: true,
+        });
+      }
+    })
+    .on('error', (error:any) => {
+      alert(`Error: ${error}`);
+    });
   }
 
-  async wrapCoin(amount: number):Promise<any> {
-    let balance = await this.getCoinBalance();
-    this.setState({
-      userBalance: String(balance)
-    })
-
-    if (balance < amount) {
-      throw "Not Enough Balance"
+  wrapCoin(amount: number):Promise<any> {
+    const {balance, account} = this.state;
+    if (Number(balance) < amount) {
+      alert("Not Enough Balance");
     }
 
     let ERC20amount = this.dappToERC20Amount(amount);
 
-    return window.voucher.methods.wrapTokens(ERC20amount.toString(), this.getAccount()).send({from: await this.getAccount()})
-
-      .then((receipt: any) => {
-        console.log(receipt)
-      });
-
+    this.setState({isWrapping: true})
+    return window.voucher.methods.wrapTokens(ERC20amount.toString(), account).send({from: this.state.account})
+        .on('confirmation', (confirmationNumber:number) => {
+          if (confirmationNumber === 1) {
+            this.setState({
+              isWrapping: false,
+              isWrapped: true,
+            });
+          }
+        })
+        .on('error', (error:any) => {
+          alert(`Error: ${error}`);
+        });
   }
 
-  handleClick() {
-    this.setState({isApproving: true})
+  handleApproveClick() {
+    const {balance} = this.state;
+    const convertAmount = Number(this.state.convertAmount);
+    if (convertAmount > Number(balance)) {
+      alert(`Woops! You cannot voucher ${convertAmount} Dai since your account balance is ${balance} `);
+      return ;
+    }
+
+    this.approve(convertAmount)
+  };
+
+  handleWrapClick() {
+    const {balance} = this.state;
+    const convertAmount = Number(this.state.convertAmount);
+    if (convertAmount > Number(balance)) {
+      alert(`Woops! You cannot voucher ${convertAmount} Dai since your account balance is ${balance} `);
+      return ;
+    }
+
+    // success state
+
+    this.wrapCoin(convertAmount)
   };
 
   render() {
-    const {convertAmount, isApproving, isApproved} = this.state;
+    const {convertAmount, isApproving, isApproved, isWrapping} = this.state;
 
     const shouldPulse = convertAmount !== '' && !isApproving && !isApproved;
     return (
       <div className={styles.formContainer}>
       <div style={{color: 'black'}}>
-      {this.state.userBalance}
+      {this.state.balance}
       </div>
         <Input
           label="Amount to convert"
@@ -110,9 +156,16 @@ class _Form extends React.Component<{}, OwnState> {
         />
 
         <div className={styles.bottomSection}>
-          <div className={`${styles.iconContainer} ${shouldPulse && styles.pulse}`} onClick={() => this.handleClick()}>
-            <Icon name={isApproving ? 'spinner' : "check circle outline"} loading={isApproving} size="big" color="grey" />
+          <div className={`${styles.iconContainer} ${shouldPulse && styles.pulse}`} onClick={() => this.handleApproveClick()}>
+            <Icon name={isApproving ? 'spinner' : "check circle outline"} loading={isApproving} size="big" color={isApproved ? "green" : "grey"} disabled={isApproved || isApproving}/>
+            {isApproved && 'Approved'}
           </div>
+
+      {isApproved &&
+          (<div className={`${styles.iconContainer} ${shouldPulse && styles.pulse}`} onClick={() => this.handleWrapClick()}>
+            <Icon name={isWrapping ? 'spinner' : "check circle outline"} loading={isWrapping} size="big" color="grey" />
+          </div>
+            )}
         </div>
       </div>
     )

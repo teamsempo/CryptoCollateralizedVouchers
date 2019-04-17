@@ -188,11 +188,15 @@ class _Form extends React.Component<{}, OwnState> {
     const shouldPulse = amount !== '' && !isApproving && !isApproved;
     return (
       <div className={styles.formContainer}>
+        <img className={styles.logo} src={'sempo_logo_white.png'} />
+        <h1>
+          Dai wrapper
+        </h1>
         <div style={{ color: 'black' }}>
           <Section>
             <div>
               You have
-              <h1
+              <h2
                 style={{
                   fontWeight: 'bold',
                   marginLeft: '8px',
@@ -200,8 +204,8 @@ class _Form extends React.Component<{}, OwnState> {
                 }}
               >
                 {' '}
-                {this.state.balance} Dai{' '}
-              </h1>
+                {Math.round(parseFloat(this.state.balance)*100)/100} Dai{' '}
+              </h2>
             </div>
           </Section>
         </div>

@@ -118,11 +118,15 @@ class _Form extends React.Component<{}, OwnState> {
     const shouldPulse = isUnwrapping;
     return (
       <div className={styles.formContainer}>
+        <img className={styles.logo} src={'sempo_logo_white.png'} />
+        <h1>
+          Dai unwrapper
+        </h1>
         <div style={{ color: 'black' }}>
           <Section>
             <div>
               You can unwrap up to
-              <h1
+              <h2
                 style={{
                   fontWeight: 'bold',
                   marginLeft: '8px',
@@ -130,8 +134,8 @@ class _Form extends React.Component<{}, OwnState> {
                 }}
               >
                 {' '}
-                {this.state.userBalance} Dai{' '}
-              </h1>
+                {Math.round(this.state.userBalance*100)/100} Dai{' '}
+              </h2>
             </div>
           </Section>
         </div>

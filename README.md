@@ -1,6 +1,6 @@
-# Stable Voucher
+#Crypto Collateralized Vouchers
 
-> Stable Voucher allows distributions of crypto to be [KYC](https://en.wikipedia.org/wiki/Know_your_customer) compliant 💸
+> Crypto Collateralized Vouchers allow distributions of crypto relief to be compliant with Government requirements such as [KYC](https://en.wikipedia.org/wiki/Know_your_customer) around the world  💸
 
 * Currently deployed on the kovan test net
 

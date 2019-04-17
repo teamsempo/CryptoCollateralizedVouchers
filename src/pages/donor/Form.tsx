@@ -2,9 +2,11 @@ import React from 'react';
 import { Icon, Popup } from 'semantic-ui-react';
 import swal from 'sweetalert';
 
+import {Redirect} from 'react-router-dom';
 import Section from './Section';
 import Input from './Input';
 import styles from './Form.module.css';
+import {routes} from '../../routes';
 import { voucherAddress } from '../../constants';
 
 interface OwnState {
@@ -19,6 +21,9 @@ interface OwnState {
   // from the contract
   balance: string;
   account: string;
+
+  // https://stackoverflow.com/questions/45089386/what-is-the-best-way-to-redirect-a-page-using-react-router
+  redirect: boolean;
 }
 
 class _Form extends React.Component<{}, OwnState> {
@@ -31,7 +36,9 @@ class _Form extends React.Component<{}, OwnState> {
 
     amount: '',
     balance: '',
-    account: ''
+    account: '',
+
+    redirect: false,
   };
 
   componentDidMount() {
@@ -117,6 +124,9 @@ class _Form extends React.Component<{}, OwnState> {
             isWrapping: false,
             isWrapped: true
           });
+          this.setState({
+            redirect: true
+          });
           this.getCoinBalance();
         }
       })
@@ -166,9 +176,15 @@ class _Form extends React.Component<{}, OwnState> {
       isApproving,
       isApproved,
       isWrapping,
-      isWrapped
+      isWrapped,
+      redirect
     } = this.state;
 
+    if (redirect) {
+      return (
+        <Redirect to={routes.recipient}/>
+      )
+    }
     const shouldPulse = amount !== '' && !isApproving && !isApproved;
     return (
       <div className={styles.formContainer}>
@@ -206,7 +222,7 @@ class _Form extends React.Component<{}, OwnState> {
             styles.doubleBottom}`}
         >
           <Popup
-            disabled={isApproved}
+            disabled={isApproved || isApproving}
             position="right center"
             trigger={
               <div
@@ -219,7 +235,6 @@ class _Form extends React.Component<{}, OwnState> {
                   loading={isApproving}
                   size="big"
                   color={isApproved ? 'green' : 'grey'}
-                  disabled={isApproved || isApproving}
                 />
               </div>
             }
@@ -228,7 +243,7 @@ class _Form extends React.Component<{}, OwnState> {
 
           {isApproved && (
             <Popup
-              disabled={isWrapped}
+              disabled={isWrapped || isWrapping}
               position="right center"
               trigger={
                 <div
@@ -241,7 +256,6 @@ class _Form extends React.Component<{}, OwnState> {
                     loading={isWrapping}
                     size="big"
                     color={isWrapped ? 'green' : 'grey'}
-                    disabled={isWrapped || isWrapping}
                   />
                 </div>
               }

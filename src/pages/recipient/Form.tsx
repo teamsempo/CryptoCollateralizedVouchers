@@ -55,7 +55,7 @@ class _Form extends React.Component<{}, OwnState> {
       .approvedUnwrappers(account)
       .call()
       .then((result: boolean) => {
-        console.log('unwrap result:', result)
+        console.log('unwrap result:', result);
         this.setState({
           canUnwrap: result
         });
@@ -165,6 +165,7 @@ class _Form extends React.Component<{}, OwnState> {
                   loading={isUnwrapping}
                   size="big"
                   color={isUnwrapped ? 'green' : 'grey'}
+                  style={{ marginRight: '0px' }}
                 />
               </div>
             }

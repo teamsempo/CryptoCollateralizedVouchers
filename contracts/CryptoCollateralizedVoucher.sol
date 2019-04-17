@@ -1,24 +1,18 @@
 pragma solidity ^0.5.2;
 
 import "./IERC20.sol";
-import "./ERC20.sol";
 import "./SafeMath.sol";
 
 /**
  * @title Crypto Collateralized Voucher
  *
  * @dev Implementation of the Crypto Collateralized Voucher (ERC20 Compliant)
- * https://eips.ethereum.org/EIPS/eip-20
- * Originally based on code by FirstBlood:
- * https://github.com/Firstbloodio/token/blob/master/smart_contract/FirstBloodToken.sol
- *
- * This implementation emits additional Approval events, allowing applications to reconstruct the allowance status for
- * all accounts just by listening to said events. Note that this isn't required by the specification, and other
- * compliant implementations may not do it.
+ * Based on the OpenZeppelin ERC20
+ * (https://github.com/OpenZeppelin/openzeppelin-solidity/blob/master/contracts/token/ERC20/ERC20.sol)
  */
 contract CryptoCollateralizedVoucher is IERC20 {
 
-    ERC20 public targetToken;
+    IERC20 public targetToken;
 
     using SafeMath for uint256;
 
@@ -53,7 +47,8 @@ contract CryptoCollateralizedVoucher is IERC20 {
 
     /**
      * @dev Function for donors to wrap their funds into stable vouchers
-     * @param amount uint256 amount of voucher to wrap
+     * @param amount uint256 amount of funds to wrap
+     * @param recipient address The address which you want to transfer to the vouchers to
      */
     function wrapTokens(uint256 amount, address recipient) public returns (bool) {
         targetToken.transferFrom(msg.sender, address(this), amount);

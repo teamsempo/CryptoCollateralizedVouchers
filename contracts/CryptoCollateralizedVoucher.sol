@@ -1,12 +1,13 @@
 pragma solidity ^0.5.2;
 
 import "./IERC20.sol";
+import "./ERC20.sol";
 import "./SafeMath.sol";
 
 /**
- * @title Standard ERC20 token
+ * @title Crypto Collateralized Voucher
  *
- * @dev Implementation of the basic standard token.
+ * @dev Implementation of the Crypto Collateralized Voucher (ERC20 Compliant)
  * https://eips.ethereum.org/EIPS/eip-20
  * Originally based on code by FirstBlood:
  * https://github.com/Firstbloodio/token/blob/master/smart_contract/FirstBloodToken.sol
@@ -15,17 +16,61 @@ import "./SafeMath.sol";
  * all accounts just by listening to said events. Note that this isn't required by the specification, and other
  * compliant implementations may not do it.
  */
-contract PremintERC20 is IERC20 {
+contract CryptoCollateralizedVoucher is IERC20 {
+
+    ERC20 public targetToken;
+
     using SafeMath for uint256;
+
+    address admin;
+
+    mapping (address => bool) public approvedUnwrappers;
 
     mapping (address => uint256) private _balances;
 
     mapping (address => mapping (address => uint256)) private _allowed;
 
     uint256 private _totalSupply;
+    string public symbol = 'CCV';
+    string public  name = 'Crypto Collateralized Voucher';
+    uint8 public decimals = 18;
 
-    constructor() public {
-        _mint(msg.sender, 1000);
+    constructor(address targetTokenAddress) public {
+        targetToken = ERC20(targetTokenAddress);
+        admin = msg.sender;
+    }
+
+    /**
+    * @dev Function for admins to specify whether a given address can unwrap vouchers
+    * @param account address the address in question
+    * @param canUnwrap bool whether the address can unwrap
+    */
+    function setCanUnwrap(address account, bool canUnwrap) public returns (bool) {
+        require(msg.sender == admin, "Only the admin can decide which accounts can unwrap");
+        approvedUnwrappers[account] = canUnwrap;
+        return true;
+    }
+
+    /**
+     * @dev Function for donors to wrap their funds into stable vouchers
+     * @param amount uint256 amount of voucher to wrap
+     */
+    function wrapTokens(uint256 amount, address recipient) public returns (bool) {
+        targetToken.transferFrom(msg.sender, address(this), amount);
+        _mint(recipient, amount);
+        return true;
+    }
+
+    /**
+     * @dev Function for approved unwrappers to convert vouchers into crypto-assets.
+     * @param amount uint256 amount of voucher to unwrap
+     */
+    function unwrapTokens(uint256 amount) public returns (bool) {
+        require(balanceOf(msg.sender) > amount, "Not Enough Balance");
+        require(approvedUnwrappers[msg.sender], "Not approved to unwrap");
+
+        targetToken.transferFrom(msg.sender, address(this), amount);
+        return true;
     }
 
     /**
@@ -34,6 +79,7 @@ contract PremintERC20 is IERC20 {
     function totalSupply() public view returns (uint256) {
         return _totalSupply;
     }
+
 
     /**
      * @dev Gets the balance of the specified address.

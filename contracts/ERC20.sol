@@ -1,7 +1,6 @@
 pragma solidity ^0.5.2;
 
 import "./IERC20.sol";
-import "./PremintERC20.sol";
 import "./SafeMath.sol";
 
 /**
@@ -16,62 +15,14 @@ import "./SafeMath.sol";
  * all accounts just by listening to said events. Note that this isn't required by the specification, and other
  * compliant implementations may not do it.
  */
-contract StableVoucher is IERC20 {
-
-    PremintERC20 public targetToken;
-
+contract ERC20 is IERC20 {
     using SafeMath for uint256;
-
-    address admin;
-
-    mapping (address => bool) public approvedUnwrappers;
 
     mapping (address => uint256) private _balances;
 
     mapping (address => mapping (address => uint256)) private _allowed;
 
     uint256 private _totalSupply;
-    string public symbol = 'STBV';
-    string public  name = 'Stable Voucher';
-    uint8 public decimals = 18;
-
-    constructor(address targetTokenAddress) public {
-        targetToken = PremintERC20(targetTokenAddress);
-        admin = msg.sender;
-    }
-
-    /**
-    * @dev Function for admins to specify whether a given address can unwrap vouchers
-    * @param account address the address in question
-    * @param canUnwrap bool whether the address can unwrap
-    */
-    function setCanUnwrap(address account, bool canUnwrap) public returns (bool) {
-        require(msg.sender == admin, "Only the admin can decide which accounts can unwrap");
-        approvedUnwrappers[account] = canUnwrap;
-        return true;
-    }
-
-    /**
-     * @dev Function for donors to wrap their funds into stable vouchers
-     * @param amount uint256 amount of voucher to wrap
-     */
-    function wrapTokens(uint256 amount, address recipient) public returns (bool) {
-        targetToken.transferFrom(msg.sender, address(this), amount);
-        _mint(recipient, amount);
-        return true;
-    }
-
-    /**
-     * @dev Function for approved unwrappers to convert vouchers into crypto-assets.
-     * @param amount uint256 amount of voucher to unwrap
-     */
-    function unwrapTokens(uint256 amount) public returns (bool) {
-        require(balanceOf(msg.sender) > amount, "Not Enough Balance");
-        require(approvedUnwrappers[msg.sender], "Not approved to unwrap");
-
-        targetToken.transferFrom(msg.sender, address(this), amount);
-        return true;
-    }
 
     /**
      * @dev Total number of tokens in existence.
@@ -79,7 +30,6 @@ contract StableVoucher is IERC20 {
     function totalSupply() public view returns (uint256) {
         return _totalSupply;
     }
-
 
     /**
      * @dev Gets the balance of the specified address.

@@ -1,4 +1,4 @@
-#Crypto Collateralized Vouchers
+# Crypto Collateralized Vouchers
 
 > Crypto Collateralized Vouchers allow distributions of crypto relief to be compliant with Government requirements such as [KYC](https://en.wikipedia.org/wiki/Know_your_customer) around the world  💸
 

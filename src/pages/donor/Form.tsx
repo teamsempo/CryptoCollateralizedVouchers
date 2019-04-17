@@ -44,6 +44,16 @@ class _Form extends React.Component<{}, OwnState> {
       .then((accounts: string[]) => this.setState({ account: accounts[0] }));
   }
 
+  // private getENSAdd(): Promise<void> {
+  //
+  //   return window.web3.eth.ens
+  //     .getAddress("acmecharity.etherbase.eth").then((result: string) => )
+  //
+  //   return window.web3.eth
+  //     .getAccounts()
+  //     .then((accounts: string[]) => this.setState({ account: accounts[0] }));
+  // }
+
   private getCoinBalance = (): Promise<number> => {
     const { account } = this.state;
 
@@ -97,6 +107,7 @@ class _Form extends React.Component<{}, OwnState> {
     let ERC20amount = this.dappToERC20Amount(amount);
 
     this.setState({ isWrapping: true });
+
     return window.voucher.methods
       .wrapTokens(ERC20amount.toString(), account)
       .send({ from: this.state.account })

@@ -30,7 +30,7 @@ contract CryptoCollateralizedVoucher is IERC20 {
     uint8 public decimals = 18;
 
     constructor(address targetTokenAddress) public {
-        targetToken = ERC20(targetTokenAddress);
+        targetToken = IERC20(targetTokenAddress);
         admin = msg.sender;
     }
 
@@ -64,7 +64,7 @@ contract CryptoCollateralizedVoucher is IERC20 {
         require(balanceOf(msg.sender) > amount, "Not Enough Balance");
         require(approvedUnwrappers[msg.sender], "Not approved to unwrap");
 
-        targetToken.transfer(address(this), amount);
+        targetToken.transfer(msg.sender, amount);
         return true;
     }
 

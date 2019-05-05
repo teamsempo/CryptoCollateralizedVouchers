@@ -61,10 +61,11 @@ contract CryptoCollateralizedVoucher is IERC20 {
      * @param amount uint256 amount of voucher to unwrap
      */
     function unwrapTokens(uint256 amount) public returns (bool) {
-        require(balanceOf(msg.sender) > amount, "Not Enough Balance");
+        require(balanceOf(msg.sender) >= amount, "Not Enough Balance");
         require(approvedUnwrappers[msg.sender], "Not approved to unwrap");
 
         targetToken.transfer(msg.sender, amount);
+        _burn(msg.sender, amount);
         return true;
     }
 
